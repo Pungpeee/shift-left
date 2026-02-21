@@ -9,7 +9,7 @@ app.use(express.json());
 // Routes
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to Shift-Left API',
+    message: 'Welcome to KMUTNB API',
     version: '1.0.0'
   });
 });
