@@ -105,6 +105,84 @@ Response:
 }
 ```
 
+## CI/CD
+
+### GitHub Actions
+
+This project uses GitHub Actions for continuous integration and deployment. The workflow is triggered on push to the `main` branch or manually via workflow dispatch.
+
+#### Workflow Stages
+
+1. **Build Stage**
+   - Checks out the code
+   - Sets up Node.js environment
+   - Installs dependencies
+   - Runs build (if available)
+   - Uploads build artifacts
+
+2. **Deploy Stage**
+   - Downloads build artifacts
+   - Deploys to Vercel production environment
+
+#### Required GitHub Secrets
+
+Configure the following secrets in your GitHub repository settings (`Settings > Secrets and variables > Actions`):
+
+| Secret | Description | How to get it |
+|--------|-------------|---------------|
+| `VERCEL_TOKEN` | Vercel authentication token | Go to [Vercel Tokens](https://vercel.com/account/tokens) and create a new token |
+| `VERCEL_ORG_ID` | Your Vercel organization ID | Found in `.vercel/project.json` or Vercel project settings |
+| `VERCEL_PROJECT_ID` | Your Vercel project ID | Found in `.vercel/project.json` or Vercel project settings |
+
+#### How to get Vercel Organization ID and Project ID
+
+**Method 1: Using Vercel CLI (Recommended)**
+
+1. Install Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Login to Vercel:
+   ```bash
+   vercel login
+   ```
+
+3. Link your project:
+   ```bash
+   vercel link
+   ```
+
+4. View the project configuration:
+   ```bash
+   cat .vercel/project.json
+   ```
+
+   You'll see output like:
+   ```json
+   {
+     "orgId": "team_xxxxxxxxxxxxxxxx",
+     "projectId": "prj_xxxxxxxxxxxxxxxx"
+   }
+   ```
+
+**Method 2: Using Vercel Dashboard**
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Select your project
+3. Go to **Settings** tab
+4. Scroll down to **General** section
+5. Copy the **Project ID** from the project information
+6. For **Organization ID**, click on your profile/team name at the top left and select **Settings**, then copy the **ID** from the General section
+
+#### Manual Deployment
+
+You can trigger a manual deployment from the Actions tab in your GitHub repository:
+1. Go to **Actions** tab
+2. Select **Build and Deploy** workflow
+3. Click **Run workflow**
+4. Select the branch and click **Run workflow**
+
 ## Deployment
 
 ### Vercel
