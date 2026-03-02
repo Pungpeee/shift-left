@@ -50,7 +50,8 @@ git commit --no-verify
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) - JavaScript runtime
+- [Node.js](https://nodejs.org/) - JavaScript runtime (>= 18.0.0)
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript superset
 
 ### Installation
 
@@ -62,13 +63,19 @@ npm install
 
 ### Running the Server
 
-Start the server in development mode (with auto-reload):
+Start the server in development mode (with auto-reload using ts-node):
 
 ```bash
 npm run dev
 ```
 
-Start the server in production mode:
+Build the TypeScript project:
+
+```bash
+npm run build
+```
+
+Start the server in production mode (requires build first):
 
 ```bash
 npm start

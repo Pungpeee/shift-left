@@ -6,6 +6,8 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  NODE_VERSION: '18'
 
 jobs:
   # ============================================
@@ -20,14 +22,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js environment - name: Setup Node.js uses: actions/setup-node@v4 with: node-version: ${{ env.NODE_VERSION }} cache: 'npm'
+      # Step 2: Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # Step 4: Run build (if needed)
-      - name: Build application
+      # Step 4: Build TypeScript application
+      - name: Build TypeScript application
         run: npm run build
 
       # Step 5: Upload build artifacts for deployment
@@ -36,11 +43,12 @@ jobs:
         with:
           name: build-artifacts
           path: |
+            dist/
             node_modules/
-            src/
             package.json
             package-lock.json
             vercel.json
+          retention-days: 1
 
   # ============================================
   # Stage 2: Deploy to Vercel
