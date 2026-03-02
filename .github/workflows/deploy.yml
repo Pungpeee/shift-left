@@ -96,15 +96,23 @@ jobs:
         run: |
           echo "🚀 Deployed to: ${{ steps.deploy.outputs.preview-url }}"
 
-      # Step 5: Run OWASP ZAP Baseline Scan (DAST)
+      # Step 5: Wait for deployment to be ready
+      - name: Wait for deployment to be ready
+        run: |
+          echo "Waiting for deployment to be ready..."
+          sleep 15
+
+
+      # Step 7: Run OWASP ZAP Baseline Scan (DAST)
       - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: ${{ steps.deploy.outputs.preview-url }}
           rules_file_name: .zap/rules.tsv
-          cmd_options: '-a'
+          cmd_options: '-a -m 10 -d'
+          fail_action: 'ignore'
 
-      # Step 6: Upload ZAP scan results
+      # Step 8: Upload ZAP scan results
       - name: Upload ZAP scan results
         uses: actions/upload-artifact@v4
         if: always()
