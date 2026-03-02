@@ -7,14 +7,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_: Request, res: Response) => {
   res.json({
     message: 'Welcome to KMUTNB API',
     version: '1.0.0'
   });
 });
 
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
