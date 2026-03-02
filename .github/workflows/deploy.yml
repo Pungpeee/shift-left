@@ -43,20 +43,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high
-
-      # Step 7: Upload build artifacts for deployment
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            dist/
-            node_modules/
-            package.json
-            package-lock.json
-            vercel.json
-          retention-days: 1
+          args: --severity-threshold=medium
 
   # ============================================
   # Stage 2: Deploy & DAST Scan
@@ -108,9 +95,8 @@ jobs:
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: ${{ steps.deploy.outputs.preview-url }}
-          rules_file_name: .zap/rules.tsv
-          cmd_options: '-a -m 10 -d'
-          fail_action: 'ignore'
+          cmd_options: '-m 10 -d'
+          fail_action: 'false'
 
       # Step 8: Upload ZAP scan results
       - name: Upload ZAP scan results
