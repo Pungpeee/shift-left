@@ -124,12 +124,28 @@ This project uses GitHub Actions for continuous integration and deployment. The 
    - Checks out the code
    - Sets up Node.js environment
    - Installs dependencies
-   - Runs build (if available)
+   - Builds TypeScript application
+   - Runs Snyk security scan (SAST)
    - Uploads build artifacts
 
 2. **Deploy Stage**
    - Downloads build artifacts
    - Deploys to Vercel production environment
+   - Runs OWASP ZAP scan (DAST) on deployed application
+   - Uploads scan reports
+
+#### Security Scanning
+
+**Snyk (SAST - Static Application Security Testing)**
+- Scans dependencies for known vulnerabilities
+- Checks code for security issues
+- Results are uploaded to GitHub Security tab
+- Only allows high severity issues to pass
+
+**OWASP ZAP (DAST - Dynamic Application Security Testing)**
+- Scans the deployed application for vulnerabilities
+- Tests common attack vectors (XSS, SQL injection, etc.)
+- Generates HTML report available as workflow artifact
 
 #### Required GitHub Secrets
 
@@ -140,6 +156,7 @@ Configure the following secrets in your GitHub repository settings (`Settings > 
 | `VERCEL_TOKEN` | Vercel authentication token | Go to [Vercel Tokens](https://vercel.com/account/tokens) and create a new token |
 | `VERCEL_ORG_ID` | Your Vercel organization ID | Found in `.vercel/project.json` or Vercel project settings |
 | `VERCEL_PROJECT_ID` | Your Vercel project ID | Found in `.vercel/project.json` or Vercel project settings |
+| `SNYK_TOKEN` | Snyk authentication token | Go to [Snyk Account Settings](https://app.snyk.io/account) and generate a new API token |
 
 #### How to get Vercel Organization ID and Project ID
 

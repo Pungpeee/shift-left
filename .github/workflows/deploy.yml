@@ -11,7 +11,7 @@ env:
 
 jobs:
   # ============================================
-  # Stage 1: Build
+  # Stage 1: Build & Security Scan
   # ============================================
   build:
     name: Build Application
@@ -37,7 +37,22 @@ jobs:
       - name: Build TypeScript application
         run: npm run build
 
-      # Step 5: Upload build artifacts for deployment
+      # Step 5: Run Snyk to check for vulnerabilities (SAST)
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      # Step 6: Upload Snyk results to GitHub Security tab
+      - name: Upload Snyk results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk.sarif
+
+      # Step 7: Upload build artifacts for deployment
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -51,7 +66,7 @@ jobs:
           retention-days: 1
 
   # ============================================
-  # Stage 2: Deploy to Vercel
+  # Stage 2: Deploy & DAST Scan
   # ============================================
   deploy:
     name: Deploy to Vercel
@@ -87,3 +102,20 @@ jobs:
       - name: Output deployment URL
         run: |
           echo "🚀 Deployed to: ${{ steps.deploy.outputs.preview-url }}"
+
+      # Step 5: Run OWASP ZAP Baseline Scan (DAST)
+      - name: OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: ${{ steps.deploy.outputs.preview-url }}
+          rules_file_name: .zap/rules.tsv
+          cmd_options: '-a'
+
+      # Step 6: Upload ZAP scan results
+      - name: Upload ZAP scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-scan-results
+          path: report_html.html
+          retention-days: 30
