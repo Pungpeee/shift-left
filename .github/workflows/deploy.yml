@@ -54,7 +54,7 @@ jobs:
     needs: build
     environment:
       name: production
-      url: ${{ steps.deploy.outputs.preview-url }}
+      url: ${{ steps.deploy.outputs.production-url }}
 
     steps:
       # Step 1: Checkout the repository
@@ -85,15 +85,14 @@ jobs:
 
       - name: Debug deploy outputs
         run: |
-          echo "preview-url=${{ steps.deploy.outputs.preview-url }}"
-          echo "production-url=${{ steps.deploy.outputs.production-url }}"
+          echo "preview-url=${{ steps.deploy.outputs.production-url }}"
 
       # Step 7: Run OWASP ZAP Baseline Scan (DAST)
       - name: OWASP ZAP Baseline Sca0n
         uses: zaproxy/action-baseline@v0.14.0
         with:
-          target: ${{ steps.deploy.outputs.production-url }}
-          artifact_name: 'zap-report.html'
+          target: ${{ steps.deploy.outputs.production-url}}
+          artifact_name: 'report_html.html'
           cmd_options: '-m 15 -d'
           fail_action: 'false'
           allow_issue_writing: false
@@ -104,5 +103,5 @@ jobs:
         if: always()
         with:
           name: zap-scan-results
-          path: zap-report.html
+          path: report_html.html
           retention-days: 30
