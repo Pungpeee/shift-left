@@ -95,6 +95,7 @@ jobs:
           artifact_name: 'zap-report.html'
           cmd_options: '-m 15 -d'
           fail_action: 'false'
+          allow_issue_writing: false
 
       # Step 8: Upload ZAP scan results
       - name: Upload ZAP scan results
