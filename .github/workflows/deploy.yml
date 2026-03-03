@@ -69,7 +69,6 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
           working-directory: ./
 
       # Step 4: Output deployment URL
@@ -81,14 +80,19 @@ jobs:
       - name: Wait for deployment to be ready
         run: |
           echo "Waiting for deployment to be ready..."
-          sleep 15
+          sleep 30
 
+      - name: Debug deploy outputs
+        run: |
+          echo "preview-url=${{ steps.deploy.outputs.preview-url }}"
+          echo "production-url=${{ steps.deploy.outputs.production-url }}"
 
       # Step 7: Run OWASP ZAP Baseline Scan (DAST)
       - name: OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.10.0
+        uses: zaproxy/action-baseline@v0.14.0
         with:
-          target: ${{ steps.deploy.outputs.preview-url }}
+          target: ${{ steps.deploy.outputs.production-url }}
+          artifact_name: 'zap-report.html'
           cmd_options: '-m 10 -d'
           fail_action: 'false'
 
@@ -98,5 +102,5 @@ jobs:
         if: always()
         with:
           name: zap-scan-results
-          path: report_html.html
+          path: zap-report.html
           retention-days: 30
