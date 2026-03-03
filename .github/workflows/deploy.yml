@@ -91,9 +91,9 @@ jobs:
       - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
         with:
-          target: ${{ steps.deploy.outputs.production-url }}
+          target: ${{ steps.deploy.outputs.preview-url }}
           artifact_name: 'zap-report.html'
-          cmd_options: '-m 10 -d'
+          cmd_options: '-m 15 -d'
           fail_action: 'false'
 
       # Step 8: Upload ZAP scan results
