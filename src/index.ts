@@ -9,7 +9,7 @@ app.use(express.json());
 // Routes
 app.get('/', (_: Request, res: Response) => {
   res.json({
-    message: 'Welcome to KMUTNB API',
+    message: 'Welcome to MDNS KMUTNB API',
     version: '1.0.0'
   });
 });
